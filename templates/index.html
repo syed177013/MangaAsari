@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>MangaAsari</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family:
+            system-ui,
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            sans-serif;
+
+        background: #111;
+        color: #eee;
+    }
+
+    .container {
+        width: min(1000px, 92%);
+        margin: auto;
+        padding: 45px 0;
+    }
+
+    h1 {
+        margin: 0;
+    }
+
+    .subtitle {
+        color: #888;
+        margin-top: 6px;
+    }
+
+    .search-box {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    input {
+        flex: 1;
+
+        padding: 14px 16px;
+
+        border: 1px solid #333;
+        border-radius: 8px;
+
+        background: #1b1b1b;
+        color: #fff;
+
+        font-size: 16px;
+    }
+
+    button {
+        padding: 12px 18px;
+
+        border: none;
+        border-radius: 8px;
+
+        background: #eee;
+        color: #111;
+
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    button:hover {
+        background: #ccc;
+    }
+
+    h2 {
+        margin-top: 45px;
+        margin-bottom: 18px;
+    }
+
+    .library {
+        display: grid;
+
+        grid-template-columns:
+            repeat(
+                auto-fill,
+                minmax(180px, 1fr)
+            );
+
+        gap: 18px;
+    }
+
+    .card {
+        overflow: hidden;
+
+        border: 1px solid #292929;
+        border-radius: 10px;
+
+        background: #181818;
+    }
+
+    .card img {
+        display: block;
+
+        width: 100%;
+        height: 250px;
+
+        object-fit: cover;
+    }
+
+    .card-info {
+        padding: 14px;
+    }
+
+    .card-title {
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    .card-status {
+        margin-top: 6px;
+
+        color: #888;
+        font-size: 13px;
+    }
+
+    .card-button {
+        margin-top: 12px;
+        width: 100%;
+    }
+
+    .results {
+        display: grid;
+        gap: 12px;
+
+        margin-top: 25px;
+    }
+
+    .search-result {
+        display: flex;
+        gap: 15px;
+
+        padding: 14px;
+
+        border: 1px solid #292929;
+        border-radius: 10px;
+
+        background: #181818;
+    }
+
+    .search-result img {
+        width: 70px;
+        height: 100px;
+
+        object-fit: cover;
+
+        border-radius: 6px;
+    }
+
+    .result-info {
+        flex: 1;
+    }
+
+    .result-title {
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    .result-meta {
+        margin-top: 5px;
+
+        color: #888;
+        font-size: 13px;
+    }
+
+    .result-button {
+        margin-top: 12px;
+    }
+
+    .empty {
+        color: #777;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .chapters-section {
+        margin-top: 35px;
+    }
+
+    .chapters-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .chapters-header h2 {
+        margin: 0;
+    }
+
+    .chapters-list {
+        display: grid;
+        gap: 8px;
+    }
+
+    .chapter {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 15px;
+
+        padding: 12px 14px;
+
+        border: 1px solid #292929;
+        border-radius: 8px;
+
+        background: #181818;
+    }
+
+    .chapter-info {
+        min-width: 0;
+    }
+
+    .chapter-number {
+        font-weight: 600;
+    }
+
+    .chapter-title {
+        margin-top: 3px;
+
+        color: #888;
+        font-size: 13px;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .chapter-sources {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .source-link {
+        display: inline-block;
+
+        padding: 7px 10px;
+
+        border-radius: 6px;
+
+        background: #292929;
+        color: #eee;
+
+        text-decoration: none;
+
+        font-size: 12px;
+    }
+
+    .source-link:hover {
+        background: #3a3a3a;
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<h1>MangaAsari</h1>
+
+<div class="subtitle">
+    Your manga, wherever it lives.
+</div>
+
+
+<!-- SEARCH -->
+
+<div class="search-box">
+
+    <input
+        id="search"
+        type="text"
+        placeholder="Search manga..."
+        autocomplete="off"
+    >
+
+    <button onclick="searchManga()">
+        Search
+    </button>
+
+</div>
+
+
+<div
+    id="results"
+    class="results"
+></div>
+
+
+<!-- LIBRARY -->
+
+<h2>My Library</h2>
+
+<div
+    id="library"
+    class="library"
+></div>
+
+
+<!-- CHAPTERS -->
+
+<div
+    id="chapters-section"
+    class="chapters-section hidden"
+>
+
+    <div class="chapters-header">
+
+        <h2 id="chapters-title">
+            Chapters
+        </h2>
+
+        <button onclick="closeChapters()">
+            Close
+        </button>
+
+    </div>
+    <div id="source-search-section">
+    <button onclick="findSources()">
+        Find Sources
+    </button>
+
+    <div id="source-results"></div>
+    </div>
+    <div
+        id="chapters-list"
+        class="chapters-list"
+    ></div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+let currentMangaId = null;
+
+async function searchManga() {
+
+    const input =
+        document.getElementById("search");
+
+    const results =
+        document.getElementById("results");
+
+    const query =
+        input.value.trim();
+
+
+    if (!query) {
+        return;
+    }
+
+
+    results.innerHTML =
+        '<div class="empty">Searching AniList...</div>';
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/search?q=${encodeURIComponent(query)}`
+            );
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Search failed"
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        results.innerHTML = "";
+
+
+        if (!data.results.length) {
+
+            results.innerHTML =
+                '<div class="empty">No manga found.</div>';
+
+            return;
+        }
+
+
+        for (const manga of data.results) {
+
+            const title =
+                manga.title.english ||
+                manga.title.romaji ||
+                manga.title.native ||
+                "Unknown";
+
+
+            const romaji =
+                manga.title.romaji &&
+                manga.title.romaji !== title
+                    ? manga.title.romaji
+                    : "";
+
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "search-result";
+
+
+            card.innerHTML = `
+
+                <img
+                    src="${manga.coverImage?.medium || ""}"
+                    alt="${title}"
+                >
+
+                <div class="result-info">
+
+                    <div class="result-title">
+                        ${title}
+                    </div>
+
+                    ${
+                        romaji
+                            ? `
+                                <div class="result-meta">
+                                    ${romaji}
+                                </div>
+                              `
+                            : ""
+                    }
+
+                    <div class="result-meta">
+                        Chapters:
+                        ${manga.chapters ?? "Unknown"}
+                    </div>
+
+                    <div class="result-meta">
+                        Status:
+                        ${manga.status ?? "Unknown"}
+                    </div>
+
+                    <button
+                        class="result-button"
+                        onclick="addManga(${manga.id})"
+                    >
+                        Add to MangaAsari
+                    </button>
+
+                </div>
+
+            `;
+
+
+            results.appendChild(card);
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        results.innerHTML =
+            '<div class="empty">Search failed.</div>';
+
+    }
+
+}
+
+async function findSources() {
+    if (!currentMangaId) {
+        return;
+    }
+
+    const resultsContainer = document.getElementById("source-results");
+
+    resultsContainer.innerHTML = "Searching sources...";
+
+    try {
+        const response = await fetch(
+            `/api/library/${currentMangaId}/source-search`
+        );
+
+        if (!response.ok) {
+            throw new Error("Source search failed");
+        }
+
+        const data = await response.json();
+
+        if (!data.results.length) {
+            resultsContainer.innerHTML = "No sources found.";
+            return;
+        }
+
+        resultsContainer.innerHTML = data.results.map(result => `
+            <div class="source-result">
+                <strong>${result.title}</strong>
+
+                <div>
+                    ${result.source_name || data.source_name}
+                </div>
+
+                <button
+                    onclick='selectSource(${JSON.stringify(result)})'
+                >
+                    Use This Source
+                </button>
+            </div>
+        `).join("");
+
+    } catch (error) {
+        console.error(error);
+        resultsContainer.innerHTML = "Failed to search sources.";
+    }
+}
+
+async function selectSource(result) {
+    if (!currentMangaId) {
+        return;
+    }
+
+    const resultsContainer = document.getElementById("source-results");
+
+    resultsContainer.innerHTML = "Saving source and syncing chapters...";
+
+    try {
+        const params = new URLSearchParams({
+            source_manga_id: result.source_id,
+            source_title: result.title,
+            source_url: result.url,
+        });
+
+        const mappingResponse = await fetch(
+            `/api/library/${currentMangaId}/sources/mangadex?${params}`,
+            {
+                method: "POST",
+            }
+        );
+
+        if (!mappingResponse.ok) {
+            throw new Error("Failed to save source mapping");
+        }
+
+        const mappingData = await mappingResponse.json();
+
+        const syncResponse = await fetch(
+            `/api/library/${currentMangaId}/sync/mangadex`,
+            {
+            method: "POST",
+            }
+        );
+
+        if (!syncResponse.ok) {
+            throw new Error("Failed to sync chapters");
+        }
+
+        const syncData = await syncResponse.json();
+
+        resultsContainer.innerHTML = `
+            <div class="source-success">
+                <strong>${mappingData.message}</strong>
+                <br>
+                Synced ${syncData.chapters_found} source chapters.
+                <br>
+                Added ${syncData.chapters_created} new chapters.
+            </div>
+        `;
+
+        await loadChapters(currentMangaId);
+
+    } catch (error) {
+        console.error(error);
+
+        resultsContainer.innerHTML = `
+            <div class="source-error">
+                Failed to save source or sync chapters.
+            </div>
+        `;
+    }
+}
+
+async function addManga(anilistId) {
+
+    try {
+
+        const searchInput =
+            document.getElementById("search");
+
+
+        const response =
+            await fetch(
+                `/api/search?q=${encodeURIComponent(
+                    searchInput.value
+                )}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        const manga =
+            data.results.find(
+                item => item.id === anilistId
+            );
+
+
+        if (!manga) {
+
+            alert(
+                "Could not find manga data."
+            );
+
+            return;
+        }
+
+
+        const payload = {
+
+            anilist_id: manga.id,
+
+            title:
+                manga.title.english ||
+                manga.title.romaji ||
+                manga.title.native ||
+                "Unknown",
+
+            romaji_title:
+                manga.title.romaji,
+
+            native_title:
+                manga.title.native,
+
+            aliases:
+                manga.synonyms
+                    ? manga.synonyms.join(" | ")
+                    : null,
+
+            cover_url:
+                manga.coverImage?.medium ||
+                null,
+
+            status:
+                manga.status
+
+        };
+
+
+        const saveResponse =
+            await fetch(
+                "/api/library",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(payload)
+                }
+            );
+
+
+        const result =
+            await saveResponse.json();
+
+
+        if (!saveResponse.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Failed to add manga"
+            );
+
+        }
+
+
+        alert(result.message);
+
+        loadLibrary();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Failed to add manga."
+        );
+
+    }
+
+}
+
+
+async function loadLibrary() {
+
+    const library =
+        document.getElementById("library");
+
+
+    library.innerHTML =
+        '<div class="empty">Loading library...</div>';
+
+
+    try {
+
+        const response =
+            await fetch("/api/library");
+
+
+        const data =
+            await response.json();
+
+
+        library.innerHTML = "";
+
+
+        if (!data.manga.length) {
+
+            library.innerHTML =
+                '<div class="empty">Your library is empty.</div>';
+
+            return;
+        }
+
+
+        for (const manga of data.manga) {
+
+            const card =
+                document.createElement("div");
+
+
+            card.className =
+                "card";
+
+
+            card.innerHTML = `
+
+                ${
+                    manga.cover_url
+                        ? `
+                            <img
+                                src="${manga.cover_url}"
+                                alt="${manga.title}"
+                            >
+                          `
+                        : ""
+                }
+
+                <div class="card-info">
+
+                    <div class="card-title">
+                        ${manga.title}
+                    </div>
+
+                    <div class="card-status">
+                        ${manga.status || ""}
+                    </div>
+
+                    <button
+                        class="card-button"
+                        onclick="loadChapters(${manga.id})"
+                    >
+                        View Chapters
+                    </button>
+
+                </div>
+
+            `;
+
+
+            library.appendChild(card);
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        library.innerHTML =
+            '<div class="empty">Failed to load library.</div>';
+
+    }
+
+}
+
+
+async function loadChapters(mangaId) {
+
+    currentMangaId = mangaId;
+
+    const section =
+        document.getElementById("chapters-section");
+
+    const title =
+        document.getElementById("chapters-title");
+
+    const list =
+        document.getElementById("chapters-list");
+
+
+    section.classList.remove("hidden");
+
+    list.innerHTML =
+        '<div class="empty">Loading chapters...</div>';
+
+
+    section.scrollIntoView({
+        behavior: "smooth"
+    });
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/library/${mangaId}/chapters`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to load chapters"
+            );
+
+        }
+
+
+        title.textContent =
+            `${data.manga.title} — Chapters`;
+
+
+        list.innerHTML = "";
+
+
+        if (!data.chapters.length) {
+
+            list.innerHTML =
+                '<div class="empty">No chapters found.</div>';
+
+            return;
+        }
+
+
+        for (const chapter of data.chapters) {
+
+            const row =
+                document.createElement("div");
+
+
+            row.className =
+                "chapter";
+
+
+            const sources =
+                chapter.sources
+                    .map(
+                        source => `
+                            <a
+                                class="source-link"
+                                href="${source.url}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                ${source.source_name}
+                            </a>
+                        `
+                    )
+                    .join("");
+
+
+            row.innerHTML = `
+
+                <div class="chapter-info">
+
+                    <div class="chapter-number">
+                        Chapter ${chapter.number}
+                    </div>
+
+                    ${
+                        chapter.title
+                            ? `
+                                <div class="chapter-title">
+                                    ${chapter.title}
+                                </div>
+                              `
+                            : ""
+                    }
+
+                </div>
+
+                <div class="chapter-sources">
+                    ${sources}
+                </div>
+
+            `;
+
+
+            list.appendChild(row);
+
+        }
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        list.innerHTML =
+            '<div class="empty">Failed to load chapters.</div>';
+
+    }
+
+}
+
+
+function closeChapters() {
+
+    const section =
+        document.getElementById("chapters-section");
+
+    section.classList.add("hidden");
+
+}
+
+
+// Load library when page opens.
+
+loadLibrary();
+
+
+</script>
+
+</body>
+
+</html>
