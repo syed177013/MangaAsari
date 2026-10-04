@@ -8,7 +8,7 @@ MangaAsari is a small manga discovery and chapter aggregation project.
 
 Right now it uses **AniList** for manga search and the **MangaDex API** to find and fetch available chapters in a preset language. Pick a chapter and MangaAsari sends you straight to the original MangaDex reader.
 
-No reader of its own yet. No scraping. Just API → database → link.
+No reader of its own yet. Less things to go wrong lol
 
 ## Why?
 
