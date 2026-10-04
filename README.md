@@ -1,5 +1,8 @@
 # MangaAsari
 
+![MangaAsari](assets/homepage.png)
+![MangaAsari Demo](assets/demo.gif)
+
 
 MangaAsari is a small manga discovery and chapter aggregation project.
 
