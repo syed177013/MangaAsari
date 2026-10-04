@@ -192,7 +192,7 @@ Running the sync again added **0 new chapters**.
 Requires **Python 3.11+**.
 
 ```powershell
-git clone <YOUR-REPOSITORY-URL>
+git clone https://github.com/syed177013/MangaAsari.git
 cd MangaAsari
 
 python -m venv .venv
